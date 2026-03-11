@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../app/generated/prisma"
+  output   = "../src/app/generated/prisma"
 }
 
 datasource db {
@@ -28,6 +28,7 @@ model User{
   password String   
   verifyCode String
   verifyCodeExpiry DateTime
+  isVerified Boolean @default(false) //when user registers, we will generate a verify code and set isVerified to false, when user clicks the verification link, we will check the verify code and set isVerified to true
   isAcceptingMessages Boolean @default(true)
-  messages Message[]  
+  messages Message[]
 }

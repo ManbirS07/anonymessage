@@ -12,6 +12,7 @@ export interface User {
     password: string;
     verifyCode: string;
     verifyCodeExpiry: Date;
+    isVerified: boolean;
     isAcceptingMessages: boolean;
     messages: Message[];
 }
