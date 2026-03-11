@@ -4,6 +4,7 @@ export interface Message {
     createdAt: Date;
 }
 
+//for the frontend
 export interface User {
     id: string;
     username: string;
