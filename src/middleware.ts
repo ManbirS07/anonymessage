@@ -10,7 +10,7 @@ export async function middleware(request: NextRequest) {
     const url = request.nextUrl //get the path of the request, e.g. /dashboard or /api/auth/signin
 
     // If the user is not authenticated and trying to access a protected route, redirect them to the sign-in page
-    if (!token && url.pathname !== "/api/auth/signin" && url.pathname !== "/api/auth/signup") {
+    if (!token && url.pathname !== "/api/auth/signin") {
         return NextResponse.redirect(new URL("/api/auth/signin", request.url))
     }
 
@@ -20,12 +20,9 @@ export async function middleware(request: NextRequest) {
     }
 }
  
-// See "Matching Paths" below to learn more
+// defines the paths on which I want the middleware to run
 export const config = {
   matcher: [
-    '/',
-    '/api/auth/signin',
-    '/api/signup',
     '/dashboard/:path*'
   ]
 }

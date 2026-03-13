@@ -4,7 +4,6 @@
 //if user exists, and is verified, return error saying user already exists
 //if user exists but is not verified, generate new otp, update user and send mail again
 // if user does not exist, create user, generate otp and send mail
-
 import prisma from "@/src/lib/db";
 import bcrypt from "bcryptjs";
 import sendVerificationMail from "@/src/helper/sendVerificationMail";
@@ -81,7 +80,11 @@ export async function POST(request: Request) {
         });
 
         await sendVerificationMail(email, username, verifyCode); //send mail after creating user
-
+        return Response.json({
+            success: true,
+            responseMessage: "User created successfully. Please check your email for the verification code."
+        }, { status: 201}
+    )
         } catch (error) {
             console.error("Error creating user:", error);
             return Response.json({

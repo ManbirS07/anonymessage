@@ -2,6 +2,7 @@ import { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import Google from "next-auth/providers/google"
 import bcrypt from "bcryptjs"
+import { getCsrfToken } from "next-auth/react"
 import prisma from "@/src/lib/db"
 
 // Authentication Providers in NextAuth.js are services that can be used to sign in a user.
@@ -56,10 +57,16 @@ export const authOptions: NextAuthOptions = {
         Google({
             clientId: process.env.GOOGLE_CLIENT_ID!,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-        }),
+        })
     ],
+
+// With strategy: "database":
+// NextAuth creates a session record in the database. That record has a sessionToken, which is just a random string
+// That same token is also stored in the browser cookie.
+//  On later requests, NextAuth reads the cookie, finds the matching session row in the database, and knows which user is signed in.
     session: {
         strategy: "jwt",
+        maxAge: 3 * 24 * 60 * 60, 
     },
     secret: process.env.NEXTAUTH_SECRET,
     // When authorize() returns the user, this callback receives it
@@ -72,14 +79,24 @@ export const authOptions: NextAuthOptions = {
 // User signs in → authorize() validates credentials and returns user
 // jwt callback fires → stores id, isVerified, isAcceptingMessages, username in the token
 // On any page/API call → session callback fires → copies those fields from token into session.user
+    // pages:{
+    //     signIn: '/signin' //custom sign in page at /signin instead of default nextAuth page
+    // },
     callbacks: {
-        async jwt({ token, user }) {
+        async jwt({ token, user, trigger, session }) {
             //try to send as much as user data possible via the token, so we don't have to query the database for it
             if (user) {
                 token.id = user.id
                 token.isVerified = user.isVerified
                 token.isAcceptingMessages = user.isAcceptingMessages
                 token.username = user.username
+            }
+
+            // If the session is being updated (e.g. user changes their username or message preferences), we want to update the token as well,
+            //  so that the new values are reflected in the session without the user having to sign out and sign back in.
+            if (trigger === "update") {
+                token.username = session.username
+                token.isAcceptingMessages = session.isAcceptingMessages
             }
             return token
         },
@@ -93,5 +110,5 @@ export const authOptions: NextAuthOptions = {
             }
             return session
         }
-    }
+    }, 
 }
