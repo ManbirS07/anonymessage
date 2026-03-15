@@ -2,7 +2,6 @@ import { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import Google from "next-auth/providers/google"
 import bcrypt from "bcryptjs"
-import { getCsrfToken } from "next-auth/react"
 import prisma from "@/src/lib/db"
 
 // Authentication Providers in NextAuth.js are services that can be used to sign in a user.
@@ -21,7 +20,7 @@ export const authOptions: NextAuthOptions = {
                 password: { label: "Password", type: "password" }   
             },
 
-            async authorize(credentials, req) : Promise<any> {
+            async authorize(credentials) : Promise<any> {
                 if (!credentials?.email || !credentials.password) {
                     throw new Error("Invalid credentials")
                 }
