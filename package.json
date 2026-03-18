@@ -12,6 +12,7 @@
     "@prisma/adapter-pg": "^7.4.2",
     "@prisma/client": "^7.5.0",
     "@react-email/components": "^1.0.9",
+    "ai": "^6.0.116",
     "bcryptjs": "^3.0.3",
     "next": "16.1.6",
     "next-auth": "^4.24.13",
