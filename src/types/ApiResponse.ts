@@ -7,5 +7,13 @@ export interface ApiResponse {
     responseMessage: string,
     isAcceptingMessages?: boolean,
     messages?: Message[] //to send the user messages in response for the user dashboard
+    pagination?: {
+        page: number,
+        pageSize: number,
+        totalMessages: number,
+        totalPages: number,
+        hasNextPage: boolean,
+        hasPrevPage: boolean
+    },
     user?: User //to send the user data in response for the user dashboard if needed
 }
