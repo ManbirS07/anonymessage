@@ -68,6 +68,9 @@ export const authOptions: NextAuthOptions = {
         maxAge: 3 * 24 * 60 * 60, 
     },
     secret: process.env.NEXTAUTH_SECRET,
+    pages: {
+        signIn: '/sign-in',
+    },
     // When authorize() returns the user, this callback receives it
     // and stores custom fields (id, isVerified, isAcceptingMessages, username) into the JWT token.
 
