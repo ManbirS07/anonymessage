@@ -5,5 +5,8 @@ export const usernameValidation = z.string().min(3).max(20).regex(/^[a-zA-Z0-9_]
 export const registerSchema = z.object({
     username: usernameValidation,
     email: z.email({message: "Invalid email address"}),
-    password: z.string().min(6, {message: "Password must be at least 6 characters long"}).max(100)
-})
+    password: z.string().min(6, {message: "Password must be at least 6 characters long"}).max(100),
+    confirmPassword: z.string().min(6, {message: "Confirm Password must be at least 6 characters long"}).max(100),
+}).refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match"
+});

@@ -23,8 +23,6 @@ export async function GET(request: Request) {
         }, 405)
     }
 
-
-
     try {
         const { searchParams } = new URL(request.url);
         const queryParam = {

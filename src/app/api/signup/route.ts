@@ -13,7 +13,7 @@ import sendVerificationMail from "@/src/helper/sendVerificationMail";
 export async function POST(request: Request) {
     try {
         //check if user with this username exists
-        const { username, email, password } = await request.json(); 
+        const { username, email, password, confirmPassword } = await request.json(); 
 
         let user = await prisma.user.findUnique({ where: { username } });
         if (user) {
@@ -21,6 +21,13 @@ export async function POST(request: Request) {
                 success: false,
                 responseMessage: "User with this username already exists. Please choose a different username."
             }, { status: 400 })
+        }
+
+        if (password !== confirmPassword) {
+            return Response.json({
+                success: false,
+                responseMessage: "Passwords don't match."
+            }, { status: 400 });
         }
 
         //hash the password before saving to db for security reasons
