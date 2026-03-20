@@ -41,7 +41,7 @@ export async function GET(request: Request) {
         const { username } = parsedQuery.data;
 
         //check only for verified users
-        const user = await prisma.user.findUnique({ where: { username, isVerified: true } });
+        const user = await prisma.user.findUnique({ where: { username} });
 
         if (user) {
             return apiJson({

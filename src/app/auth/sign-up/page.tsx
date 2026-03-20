@@ -12,7 +12,6 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { toast } from "sonner";
-import { de } from "zod/v4/locales";
 
 const socialMediaButtons = [
   {
@@ -39,17 +38,26 @@ function DraftForm() {
   const [isCheckingUsername, setIsCheckingUsername] = useState(false)
   const [submitting, setSubmitting] = useState(false)
 
-  const debounced = useDebounceCallback(setUsername, 500) //debounce the username input to avoid making too many requests while the user is typing
+  const debounced = useDebounceCallback((value: string) => setUsername(value), 500) //debounce the username input to avoid making too many requests while the user is typing
   const router = useRouter()
 
   useEffect(() => {
     const checkUsername = async () => {
+      if (!username) {
+        setUsernameMessage(null)
+        return
+      }
       setIsCheckingUsername(true)
       try {
         const res = await axios.get(`/api/check-username-unique?username=${username}`)
         setUsernameMessage(res.data.responseMessage)
-      } catch (error) {
-        setUsernameMessage("An error occurred while checking username availability")
+      } catch (error: any) { 
+        // Handle axios error - 400 status code is caught here
+        if (error.response?.data?.responseMessage) {
+          setUsernameMessage(error.response.data.responseMessage)
+        } else {
+          setUsernameMessage("An error occurred while checking username availability")
+        }
       } finally {
         setIsCheckingUsername(false)
       }
@@ -59,28 +67,31 @@ function DraftForm() {
   }, [username]);
 
   const handleSubmit = form.handleSubmit(async (data: Schema) => {
-    try {   
       // TODO: implement form submission
       setSubmitting(true)
       try {
         const res = await axios.post("/api/signup", data)
         if (res.data.success) {
           toast.success(res.data.responseMessage)
-          router.replace(`/verify/${username}`) //redirect to verify email after successful signup
+          router.replace(`/auth/verify-code/${data.username}`) //redirect to verify email after successful signup
         } else {          
           toast.error(res.data.responseMessage)
         }
       } catch (error) {
-        toast.error("An error occurred during signup. Please try again later.")
+        toast.error("An error occurred during signup")
       } finally {
         setSubmitting(false)
       }
-      console.log(data);        
       form.reset();
-    } catch (error) {
-      toast.error("An error occurred during signup. Please try again later.")
-    }
-  });
+    }, (errors) => {
+      // Log validation errors to help debug
+      console.log("Form validation errors:", errors)
+      Object.values(errors).forEach(error => {
+        if (error?.message) {
+          toast.error(error.message)
+        }
+      })
+    })
 
   return (  
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
@@ -208,6 +219,7 @@ function DraftForm() {
         />
 
         <Button 
+          type="submit"
           disabled={submitting}
           className="w-full bg-black text-white hover:bg-gray-800 mt-2 font-medium"
         >
@@ -217,7 +229,7 @@ function DraftForm() {
               Signing up...
             </>
           ) : (
-            "Signup"
+            "Submit"
           )}
         </Button>
 

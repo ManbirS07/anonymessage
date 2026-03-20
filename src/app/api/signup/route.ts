@@ -15,7 +15,8 @@ export async function POST(request: Request) {
         //check if user with this username exists
         const { username, email, password, confirmPassword } = await request.json(); 
 
-        let user = await prisma.user.findUnique({ where: { username } });
+        //check only verified users
+        let user = await prisma.user.findUnique({ where: { username} });
         if (user) {
             return Response.json({
                 success: false,
@@ -39,7 +40,7 @@ export async function POST(request: Request) {
 
         let userByEmail = await prisma.user.findUnique({ where: { email } });
         if (userByEmail) {
-            //case 2
+            //case 2 -> user ka username alag h but email same, toh check karenge ki kya user verified h ya nahi, agar verified h toh error denge ki user already exists, agar verified nahi h toh naya otp generate karenge, user update karenge aur mail bhej denge
             if (userByEmail.isVerified) {
                 return Response.json({
                     success: false,
@@ -47,6 +48,9 @@ export async function POST(request: Request) {
                 }, { status: 400 })
             } else {
                 //generate new otp, update user and send mail again
+                //iska mtlb user ne username bhi toh update kiya hoga, toh usko bhi update kar dete h, warna user ko login karne me dikkat hogi kyuki username se hi toh login karna hoga
+                //basically ek email se ek hi account
+                userByEmail.username = username;
                 userByEmail.password = hashedPassword;
                 userByEmail.verifyCode = verifyCode;
                 userByEmail.verifyCodeExpiry = expiryTime;
@@ -55,11 +59,17 @@ export async function POST(request: Request) {
                     await prisma.user.update({
                         where: { email },
                         data: {
+                            username,
                             password: hashedPassword,
                             verifyCode: verifyCode,
                             verifyCodeExpiry: expiryTime
                         }
                     })
+                    await sendVerificationMail(email, userByEmail.username, verifyCode); //send mail after updating user
+                    return Response.json({
+                        success: true,
+                        responseMessage: "A new verification code has been sent to your email. Please check your email for the verification code."
+                    }, { status: 200 })
                 } catch (error) {
                     console.error("Error updating user:", error);
                     return Response.json({

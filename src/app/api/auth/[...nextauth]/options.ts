@@ -15,8 +15,8 @@ export const authOptions: NextAuthOptions = {
         CredentialsProvider({
             name: "Credentials",
             credentials: {
-                //creates a form with the username and password fields
-                email: { label: "Username", type: "text ", placeholder: "jsmith" },
+                //creates a form with the email and password fields
+                email: { label: "Email", type: "text ", placeholder: "jsmith@gmail.com" },
                 password: { label: "Password", type: "password" }   
             },
 
@@ -40,7 +40,6 @@ export const authOptions: NextAuthOptions = {
                     }
 
                     const isPasswordValid = await bcrypt.compare(credentials.password, user.password)
-
                     if (!isPasswordValid) {
                         throw new Error("Invalid credentials")
                     }
@@ -81,9 +80,6 @@ export const authOptions: NextAuthOptions = {
 // User signs in → authorize() validates credentials and returns user
 // jwt callback fires → stores id, isVerified, isAcceptingMessages, username in the token
 // On any page/API call → session callback fires → copies those fields from token into session.user
-    // pages:{
-    //     signIn: '/signin' //custom sign in page at /signin instead of default nextAuth page
-    // },
     callbacks: {
         async jwt({ token, user, trigger, session }) {
             //try to send as much as user data possible via the token, so we don't have to query the database for it

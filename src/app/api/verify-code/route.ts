@@ -1,10 +1,10 @@
 import prisma from "@/src/lib/db";
 import { apiJson } from "@/src/helper/verifyApiResponse";
 
+//OTP VERIFICATION ENDPOINT
 export async function POST(request: Request) {
     try {
         const { username, verifyCode } = await request.json();
-
         const user = await prisma.user.findUnique({ where: { username } });
 
         if (!user) {
@@ -14,8 +14,7 @@ export async function POST(request: Request) {
             }, { status: 400 })
         }
 
-        const isCodeValid = user.verifyCode === verifyCode && user.verifyCodeExpiry && user.verifyCodeExpiry > new Date();
-        
+        const isCodeValid = user.verifyCode === verifyCode 
         const isCodenotExpired = user.verifyCodeExpiry && user.verifyCodeExpiry > new Date();
 
         if(isCodeValid && isCodenotExpired) {
@@ -28,7 +27,7 @@ export async function POST(request: Request) {
             return apiJson({
                 success: true,
                 responseMessage: "Email verified successfully. You can now login to your account."
-            }, 200)
+            }, 200) //after successful verification, we can redirect the user to the login page
         }
 
         if (!isCodeValid) {
@@ -45,7 +44,7 @@ export async function POST(request: Request) {
             }, 400)
         }
 
-    }    catch (error) {
+    } catch (error) {
         return apiJson({
             success: false,
             responseMessage: "An error occurred while verifying the code. Please try again later."
