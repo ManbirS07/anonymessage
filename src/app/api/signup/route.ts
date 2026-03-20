@@ -113,8 +113,6 @@ export async function POST(request: Request) {
             });
         }
 
-        
-
     } catch (error) {
         console.error("Error in signup route:", error);
         return Response.json({

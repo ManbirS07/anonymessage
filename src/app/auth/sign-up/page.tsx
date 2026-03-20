@@ -12,17 +12,9 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { toast } from "sonner";
-
-const socialMediaButtons = [
-  {
-    src: "https://cdn.brandfetch.io/id6O2oGzv-/theme/dark/symbol.svg?c=1bxid64Mup7aczewSAYMX&t=1755835725776",
-    label: "Continue with Google",
-  }
-];
-
 type Schema = z.infer<typeof registerSchema>;
 
-function DraftForm() {
+export default function Signup() {
   const form = useForm<Schema>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -77,8 +69,12 @@ function DraftForm() {
         } else {          
           toast.error(res.data.responseMessage)
         }
-      } catch (error) {
-        toast.error("An error occurred during signup")
+      } catch (error: any) {
+        if (error.response?.data?.responseMessage) {
+          setUsernameMessage(error.response.data.responseMessage)
+        } else {
+          setUsernameMessage("An error occurred while checking username availability")
+        }
       } finally {
         setSubmitting(false)
       }
@@ -99,7 +95,7 @@ function DraftForm() {
       onSubmit={handleSubmit}
       className="w-full max-w-md bg-white rounded-lg shadow-lg p-8"
     >
-      <FieldGroup className="flex flex-col gap-6">
+        <FieldGroup className="flex flex-col gap-4">
         <div className="text-center mb-4">
           <h1 className="text-4xl font-extrabold text-black mb-2">
             Join AnonyMessage
@@ -129,7 +125,7 @@ function DraftForm() {
                   }}
                   aria-invalid={fieldState.invalid}
                   placeholder="username"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-black pr-10"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-400 pr-10"
                 />
                 {isCheckingUsername && (
                   <div className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -160,12 +156,13 @@ function DraftForm() {
                 {...field}
                 id="email"
                 type="email"
+                autoComplete="off"
                 onChange={(e) => {
                   field.onChange(e.target.value);
                 }}
                 aria-invalid={fieldState.invalid}
                 placeholder="email"
-                className="bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-black"
+                className="bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-400"
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -187,7 +184,7 @@ function DraftForm() {
                 id="password"
                 type="password"
                 placeholder="password"
-                className="bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-black"
+                className="bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-400"
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -211,7 +208,7 @@ function DraftForm() {
                 id="confirmPassword"
                 type="password"
                 placeholder="confirm password"
-                className="bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-black"
+                className="bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-400"
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -221,7 +218,7 @@ function DraftForm() {
         <Button 
           type="submit"
           disabled={submitting}
-          className="w-full bg-black text-white hover:bg-gray-800 mt-2 font-medium"
+          className="bg-black text-white hover:bg-gray-900 active:bg-black mt-4 font-semibold py-2 px-6 rounded-xl transition-colors duration-200 text-sm h-10"
         >
           {submitting ? (
             <>
@@ -229,31 +226,10 @@ function DraftForm() {
               Signing up...
             </>
           ) : (
-            "Submit"
+            "Sign up"
           )}
         </Button>
-
-        <div className="flex items-center gap-4 my-4">
-          <div className="flex-grow border-t border-gray-300"></div>
-          <span className="text-gray-500 font-medium text-sm">OR</span>
-          <div className="flex-grow border-t border-gray-300"></div>
-        </div>
         
-        <div className="flex gap-3 justify-center w-full items-center flex-wrap">
-          {socialMediaButtons.map((o) => (
-            <button
-              key={o.label}
-              type="button"
-              className="text-sm gap-2 px-4 h-10 border border-gray-300 hover:bg-gray-50 w-full flex items-center justify-center font-medium bg-white text-gray-800 rounded-md transition"
-            >
-              <div className="place-items-center grid rounded-full bg-white size-5 p-0.5 flex-shrink-0">
-                <img src={o.src} width={16} height={16} alt="Google" />
-              </div>
-              <span>{o.label}</span>
-            </button>
-          ))}
-        </div>
-
         <div className="text-center pt-4 border-t border-gray-200">
           <p className="text-gray-600 text-sm">
             Already a member?{" "}
@@ -270,6 +246,3 @@ function DraftForm() {
     </div>
   );
 }
-
-
-export default DraftForm;

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Fraunces } from "next/font/google";
 import { Toaster } from "../components/ui/toaster";
+import AuthProvider from "../context/AuthProvider";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -30,7 +31,9 @@ export default function RootLayout({
       <body
         className={`${spaceGrotesk.variable} ${fraunces.variable} antialiased bg-black text-white font-space-grotesk`}
       >
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
         <Toaster />
       </body>
     </html>

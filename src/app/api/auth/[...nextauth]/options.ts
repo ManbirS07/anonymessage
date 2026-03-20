@@ -8,16 +8,14 @@ import prisma from "@/src/lib/db"
 // Main ways user can be signed in:
 // 1. Using a username and password (Credentials Provider)
 // 2. Using an OAuth provider (Google, Facebook, etc.)
-
-
 export const authOptions: NextAuthOptions = {
     providers: [
         CredentialsProvider({
             name: "Credentials",
             credentials: {
                 //creates a form with the email and password fields
-                email: { label: "Email", type: "text ", placeholder: "jsmith@gmail.com" },
-                password: { label: "Password", type: "password" }   
+                email: { label: "email", type: "text ", placeholder: "jsmith@gmail.com" },
+                password: { label: "password", type: "password" }   
             },
 
             async authorize(credentials) : Promise<any> {
@@ -35,7 +33,7 @@ export const authOptions: NextAuthOptions = {
                         throw new Error("No user found")
                     }
 
-                    if(!user.isVerified) {
+                    if(user.isVerified == false) {
                         throw new Error("Please verify your email before signing in")   
                     }
 
@@ -48,7 +46,7 @@ export const authOptions: NextAuthOptions = {
                     return user
 
                 } catch (error) {
-                    throw new Error("Invalid credentials")
+                    throw new Error(error instanceof Error ? error.message : "An error occurred during authentication")
                 }
             }
         }),
