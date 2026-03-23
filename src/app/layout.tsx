@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, Fraunces } from "next/font/google";
+import { Space_Grotesk, Fraunces, Geist } from "next/font/google";
 import { Toaster } from "../components/ui/toaster";
 import AuthProvider from "../context/AuthProvider";
+import Navbar from "../components/navbar";
 import "./globals.css";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
@@ -27,11 +31,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className={cn("dark", "font-sans", geist.variable)}>
       <body
         className={`${spaceGrotesk.variable} ${fraunces.variable} antialiased bg-black text-white font-space-grotesk`}
       >
         <AuthProvider>
+          <Navbar />
           {children}
         </AuthProvider>
         <Toaster />

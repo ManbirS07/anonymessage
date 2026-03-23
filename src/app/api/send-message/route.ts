@@ -1,7 +1,6 @@
 import prisma from "@/src/lib/db";
 import { apiJson } from "@/src/helper/verifyApiResponse";
 
-
 export async function POST(request: Request) {
     //any user can send a message, we dont need to authenticate in order to send a message, but to view messages they must be autheticated
     // const session = await getServerSession(authOptions)
