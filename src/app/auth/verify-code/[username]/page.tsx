@@ -9,9 +9,9 @@ import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import axios from "axios";
 import { toast } from "sonner";
-import { Button } from "@/src/components/ui/button";
-import { Form, FormField, FormItem, FormLabel, FormMessage } from "@/src/components/ui/form";
-import { Input } from "@/src/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Form, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 
 type Schema = z.infer<typeof verifyCodeSchema>;
 
