@@ -66,7 +66,7 @@ export const authOptions: NextAuthOptions = {
     },
     secret: process.env.NEXTAUTH_SECRET,
     pages: {
-        signIn: '/sign-in',
+        signIn: '/auth/sign-in',
     }, 
     // When authorize() returns the user, this callback receives it
     // and stores custom fields (id, isVerified, isAcceptingMessages, username) into the JWT token.
@@ -79,7 +79,7 @@ export const authOptions: NextAuthOptions = {
 // jwt callback fires → stores id, isVerified, isAcceptingMessages, username in the token
 // On any page/API call → session callback fires → copies those fields from token into session.user
     callbacks: {
-        async jwt({ token, user, trigger, session }) {
+        async jwt({ token, user, trigger, session, account }) {
             //try to send as much as user data possible via the token, so we don't have to query the database for it
             if (user) {
                 token.id = user.id
@@ -94,17 +94,62 @@ export const authOptions: NextAuthOptions = {
                 token.username = session.username
                 token.isAcceptingMessages = session.isAcceptingMessages
             }
+
+             // For OAuth sign-ins, user object won't have all fields — fetch from DB
+             if(account?.provider === "google" && !token.id) {
+                try {
+                    const dbUser = await prisma.user.findUnique({
+                    where: { email: token.email as string },
+                    select: { username: true, id: true, isAcceptingMessages: true, isVerified: true }
+                })
+
+                if(dbUser) {
+                    token.username = dbUser.username
+                    token.id = dbUser.id
+                    token.isAcceptingMessages = dbUser.isAcceptingMessages
+                    token.isVerified = dbUser.isVerified
+                } 
+                } catch (error) {
+                    console.error("Error fetching user data for OAuth sign-in:", error)
+                }
+                
+            }
             return token
         },
 
         async session({ session, token }) {
-            if (token) {
-                session.user.id = token.id
-                session.user.isVerified = token.isVerified
-                session.user.isAcceptingMessages = token.isAcceptingMessages
-                session.user.username = token.username
+            if (token && session.user) {
+                session.user.id = token.id as string
+                session.user.isVerified = token.isVerified as boolean
+                session.user.isAcceptingMessages = token.isAcceptingMessages as boolean
+                session.user.username = token.username as string
             }
             return session
-        }
+        },
+
+        async signIn({ user, account}) {
+  if (account?.provider === 'google') {
+    try {
+      const existingUser =  await prisma.user.findUnique({
+                    where: { email: user.email as string },
+                    select: { username: true, id: true, isAcceptingMessages: true, isVerified: true }
+                })
+      
+      if (existingUser && existingUser.isVerified) {
+        // Only let them in if they've signed up AND verified
+        user.username = existingUser.username;
+        user.id = existingUser.id;
+        user.isAcceptingMessages = existingUser.isAcceptingMessages;
+        return true;
+      } 
+
+      return false; // No user found, prevent sign-in and redirect to sign-in page where we can show an error message about needing to sign up first
+    } catch (error) {
+      console.error('Google sign in error:', error);
+      return false;
+    }
+  }
+  return true;
+},
     }, 
 }

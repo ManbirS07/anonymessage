@@ -29,7 +29,7 @@ function Navbar() {
                 <span className="font-body text-sm text-slate-400 hidden md:block">
                   Welcome,{' '}
                   <span className="font-semibold text-slate-100">
-                    {user?.username || user?.email}
+                    {user?.username}
                   </span>
                 </span>
                 <button

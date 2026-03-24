@@ -25,12 +25,12 @@ export async function POST(request: Request) {
         const userId = user.id
 
         //flag that will be used to determine if the user is accepting messages or not, this will be sent in the request body from the client
-        const {acceptingMessages} = await request.json();
+        const {acceptMessages} = await request.json();
 
         try {
             const updatedUser = await prisma.user.update({
                 where: { id: userId },
-                data: { isAcceptingMessages: acceptingMessages }
+                data: { isAcceptingMessages: acceptMessages }
             })
 
             //token me bhi toh update karna padega, otherwise the user would have to log out and log in again to see the changes in the session
@@ -45,7 +45,7 @@ export async function POST(request: Request) {
 
             return apiJson({
                 success: true,
-                responseMessage: acceptingMessages ? "You are now accepting messages from other users." : "You are no longer accepting messages from other users.",
+                responseMessage: acceptMessages ? "You are now accepting messages from other users." : "You are no longer accepting messages from other users.",
                 isAcceptingMessages: updatedUser.isAcceptingMessages
             }, 200)
 
@@ -66,12 +66,12 @@ export async function POST(request: Request) {
 
 
 //for the recipient, I will check his acceptance status before sending a message
-
 //function for the user if he toggles and to check his status
 export async function GET(request: Request) {
     try {
         const session = await getServerSession(authOptions);    
-        if (!session || !session.user || !session.user.email) {
+
+        if (!session || !session.user || !session.user.id) {
             return apiJson({
                 success: false,
                 responseMessage: "Unauthorized. Please log in to access this resource."
@@ -80,7 +80,6 @@ export async function GET(request: Request) {
 
         const user: User = session.user
         const userId = user.id
-
         try {
             const currentUser = await prisma.user.findUnique({
                 where: { id: userId },

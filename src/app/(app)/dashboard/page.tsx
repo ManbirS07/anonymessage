@@ -21,6 +21,7 @@ function UserDashboard() {
   const [isSwitchLoading, setIsSwitchLoading] = useState<boolean>(false);
   const [profileUrl, setProfileUrl] = useState<string>('');
 
+  // delete messages
   const handleDeleteMessage = (messageId: string) => {
     setMessages((prev) => prev.filter((m) => m.id !== messageId));
   };
@@ -36,21 +37,21 @@ function UserDashboard() {
   const { register, watch, setValue } = form;
   const acceptMessages = watch('acceptMessages');
 
-  const fetchAcceptMessages = useCallback(async () => {
-    setIsSwitchLoading(true);
-    try {
-      const res = await axios.get<ApiResponse>('/api/get-accept-messages');
-      setValue('acceptMessages', res.data.isAcceptingMessages ?? false);
-    } catch (error) {
-      const axiosError = error as AxiosError<ApiResponse>;
-      if (axiosError.response?.status !== 401) {
-        toast.error(axiosError.response?.data.responseMessage ?? 'Failed to fetch message settings');
-      }
-    } finally {
-      setIsSwitchLoading(false);
-    }
-  }, [setValue]);
+  //check if the user is accepting messages or not
+  const fetchAcceptMessages = useCallback(async (isRetry = false) => {
+  setIsSwitchLoading(true);
+  try {
+    const res = await axios.get<ApiResponse>('/api/accept-messages');
+    setValue('acceptMessages', res.data.isAcceptingMessages ?? false);
+  } catch (error) {
+    const axiosError = error as AxiosError<ApiResponse>;
+    toast.error(axiosError.response?.data.responseMessage ?? 'Failed to fetch message settings');
+  } finally {
+    setIsSwitchLoading(false);
+  }
+}, [setValue]);
 
+  //fetch messages for the user
   const fetchMessages = useCallback(async (showToast = false) => {
     setIsLoading(true);
     try {
@@ -78,12 +79,17 @@ function UserDashboard() {
     }
   }, []);
 
+  //handle status change of the switch for accepting messages
   const handleSwitchChange = async () => {
     const newValue = !acceptMessages;
     try {
       await axios.post<ApiResponse>('/api/accept-messages', { acceptMessages: newValue });
       setValue('acceptMessages', newValue);
-      toast.success(newValue ? 'You are now accepting messages' : 'You are no longer accepting messages');
+      if (newValue) {
+        toast.success('You are now accepting messages');
+      } else {
+        toast.error('You are no longer accepting messages');
+      }
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>;
       toast.error(axiosError.response?.data.responseMessage ?? 'Failed to update settings');
@@ -97,15 +103,15 @@ function UserDashboard() {
     }
   }, [user?.username]);
 
-  const hasFetched = useRef(false);
 
 useEffect(() => {
-  if (status === 'authenticated' && !hasFetched.current) {
-    hasFetched.current = true;
+  if (status === 'authenticated') {
     fetchMessages();
     fetchAcceptMessages();
   }
 }, [status, fetchMessages, fetchAcceptMessages]);
+
+  //copy to clipboard
   const copyToClipboard = () => {
     navigator.clipboard.writeText(profileUrl);
     toast.success('Link copied!');
