@@ -34,7 +34,7 @@ function Navbar() {
                 </span>
                 <button
                   onClick={() => signOut()}
-                  className="font-body bg-white/5 hover:bg-indigo-500/20 border border-indigo-500/30 hover:border-indigo-400/60 text-white text-sm px-5 py-2 rounded-xl font-medium transition-all duration-200 hover:shadow-[0_0_16px_rgba(99,102,241,0.3)]"
+                  className="font-body bg-black/50 hover:bg-indigo-500/20 border border-indigo-500/30 hover:border-indigo-400/60 text-white text-sm px-5 py-2 rounded-xl font-medium transition-all duration-200 hover:shadow-[0_0_16px_rgba(99,102,241,0.3)]"
                 >
                   Logout
                 </button>

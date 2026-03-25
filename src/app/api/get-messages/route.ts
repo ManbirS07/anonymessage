@@ -19,7 +19,6 @@ export async function GET(request: Request) {
         const userId = user.id
 
         //implementing pagination for messages, to avoid sending all messages at once if the user has many messages
-
         const url = new URL(request.url);
         const pageParam = Number(url.searchParams.get("page") || "1")
         const pageSizeParam = Number(url.searchParams.get("pageSize") || "10")

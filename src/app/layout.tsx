@@ -28,7 +28,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${instrumentSerif.variable} ${dmSans.variable}`}>
       <body className="font-body">
         <AuthProvider>
-          <Navbar />
           {children}
           <Toaster richColors position="bottom-right" />
         </AuthProvider>

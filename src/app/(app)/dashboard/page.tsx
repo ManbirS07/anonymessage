@@ -14,12 +14,16 @@ import { useSession } from 'next-auth/react';
 import { useCallback, useEffect, useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import tempMessages from '@/messages.json';
+import { useRouter } from 'next/navigation';
 
 function UserDashboard() {
+  const router = useRouter();
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isSwitchLoading, setIsSwitchLoading] = useState<boolean>(false);
   const [profileUrl, setProfileUrl] = useState<string>('');
+  const [sendToUsername, setSendToUsername] = useState<string>('');
+  const [isCheckingUsername, setIsCheckingUsername] = useState<boolean>(false);
 
   // delete messages
   const handleDeleteMessage = (messageId: string) => {
@@ -59,6 +63,7 @@ function UserDashboard() {
       if (res.data.success && res.data.messages && res.data.messages.length > 0) {
         setMessages(res.data.messages);
         if (showToast) toast.success('Messages refreshed');
+        
       } else {
         const shaped = tempMessages.map((m, i) => ({
           id: `temp-${i}`,
@@ -115,6 +120,30 @@ useEffect(() => {
   const copyToClipboard = () => {
     navigator.clipboard.writeText(profileUrl);
     toast.success('Link copied!');
+  };
+
+  //handle checking username and redirecting
+  const handleCheckUsernameAndRedirect = async () => {
+    if (!sendToUsername.trim()) {
+      toast.error('Please enter a username');
+      return;
+    }
+
+    setIsCheckingUsername(true);
+    try {
+      const res = await axios.post<ApiResponse>('/api/check-username-exists', {
+        username: sendToUsername,
+      });
+
+      if (res.data.success) {
+        router.push(`/u/${sendToUsername}`);
+      }
+    } catch (error) {
+      const axiosError = error as AxiosError<ApiResponse>;
+      toast.error(axiosError.response?.data.responseMessage ?? 'Username not found');
+    } finally {
+      setIsCheckingUsername(false);
+    }
   };
 
   if (status === 'loading') {
@@ -183,6 +212,38 @@ useEffect(() => {
           </div>
         </div>
 
+        {/* Send Message Block */}
+        <div className="bg-gradient-to-r from-indigo-900/40 via-purple-900/40 to-violet-900/40 border border-indigo-500/30 backdrop-blur-sm rounded-2xl p-8 mb-6 relative overflow-hidden shadow-lg">
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute top-0 right-0 w-[250px] h-[250px] bg-indigo-500/20 rounded-full blur-[100px]" />
+            <div className="absolute bottom-0 left-0 w-[250px] h-[250px] bg-violet-500/20 rounded-full blur-[100px]" />
+          </div>
+
+          <div className="relative z-10 flex flex-col items-center justify-center">
+            <h3 className="font-display text-2xl font-bold text-white mb-2 text-center">Send Messages</h3>
+            <p className="font-body text-slate-300 text-sm mb-6 text-center"> Enter a username to send them an anonymous message</p>
+            <div className="w-full max-w-md flex flex-col gap-3">
+              <input
+                type="text"
+                placeholder="Enter username..."
+                value={sendToUsername}
+                onChange={(e) => setSendToUsername(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleCheckUsernameAndRedirect()}
+                className="font-body bg-slate-900/60 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/20 transition-all duration-200"
+              />
+              <button
+                onClick={handleCheckUsernameAndRedirect}
+                disabled={isCheckingUsername}
+                className="font-body bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 disabled:from-slate-700 disabled:to-slate-700 disabled:opacity-50 text-white rounded-xl px-8 py-2.5 text-sm font-semibold transition-all duration-200 shadow-lg hover:shadow-2xl hover:scale-105 flex items-center justify-center gap-2"
+              >
+
+                {isCheckingUsername && <Loader2 className="h-4 w-4 animate-spin" />}
+                Send 
+              </button>
+            </div>
+          </div>
+        </div>
+
         <div className="flex items-center justify-between mb-4">
           <div>
             <h2 className="font-display text-2xl font-bold text-white">Messages</h2>
@@ -200,7 +261,12 @@ useEffect(() => {
           </button>
         </div>
 
-        {messages.length > 0 ? (
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center py-20 bg-slate-800/30 border border-dashed border-slate-700 rounded-2xl">
+            <Loader2 className="h-8 w-8 animate-spin text-indigo-500 mb-3" />
+            <p className="font-body text-slate-400 text-sm">Loading your messages...</p>
+          </div>
+        ) : messages.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {messages.map((message) => (
               <MessageCard

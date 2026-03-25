@@ -25,7 +25,7 @@ type MessageCardProps = {
 
 export function MessageCard({ message, onMessageDelete }: MessageCardProps) {
   const handleDeleteConfirm = async () => {
-    // Don't call API for temp messages
+    //Don't call API for temp messages
     if (String(message.id).startsWith('temp-')) {
       onMessageDelete(String(message.id));
       return;
