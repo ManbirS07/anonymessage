@@ -69,16 +69,23 @@ const VerifyCode = () => {
     }
 
     return (
-  <div className="flex justify-center items-center min-h-screen bg-gray-100">
-    <div className="w-full max-w-md p-10 bg-white rounded-xl shadow-md text-black">
+  <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-[radial-gradient(circle_at_12%_12%,rgba(14,165,233,0.16),transparent_35%),radial-gradient(circle_at_90%_16%,rgba(59,130,246,0.2),transparent_38%),radial-gradient(circle_at_45%_90%,rgba(6,182,212,0.14),transparent_35%),linear-gradient(160deg,#041025_0%,#071330_48%,#020617_100%)]">
+    <div className="absolute inset-0 pointer-events-none">
+      <div className="absolute -top-24 right-0 h-[360px] w-[360px] rounded-full bg-cyan-400/20 blur-[120px]" />
+      <div className="absolute -bottom-20 left-0 h-[340px] w-[340px] rounded-full bg-sky-600/20 blur-[120px]" />
+    </div>
+
+    <div className="relative z-10 w-full max-w-md rounded-3xl border border-cyan-200/20 bg-slate-900/65 backdrop-blur-xl p-8 shadow-[0_20px_55px_rgba(2,6,23,0.55)]">
       <div className="text-center mb-8">
-        <h1 className="text-5xl font-extrabold leading-tight mb-4">
+        <p className="font-body text-xs uppercase tracking-[0.2em] text-cyan-200/70 mb-3">AnonyMessage</p>
+        <h1 className="font-display text-4xl leading-tight font-bold text-white mb-3">
           Verify Your Account
         </h1>
-        <p className="text-sm text-gray-600">
+        <p className="font-body text-sm text-slate-300">
           Enter the verification code sent to your email
         </p>
       </div>
+
       <Form {...form}>
         <form onSubmit={onSubmit} className="space-y-4">
           <FormField
@@ -86,42 +93,43 @@ const VerifyCode = () => {
             control={form.control}
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm font-medium text-gray-700">
+                <FormLabel className="font-body text-sm font-medium text-slate-200">
                   Verification Code
                 </FormLabel>
                 <Input
                   {...field}
-                  placeholder="code"
-                  className="w-full border border-gray-300 rounded-lg h-11 px-4 text-sm focus:outline-none"
+                  placeholder="Enter your code"
+                  className="h-11 rounded-xl border border-slate-700 bg-slate-950/50 px-4 text-sm text-slate-100 placeholder:text-slate-500 focus-visible:ring-cyan-400/40 focus-visible:border-cyan-300"
                 />
-                <FormMessage />
+                <FormMessage className="text-red-300" />
               </FormItem>
             )}
           />
-<Button
-  type="submit"
-  disabled={form.formState.isSubmitting}
-  className="bg-black text-white hover:bg-gray-900 rounded-lg w-24 py-4 text-base font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
->
-  {form.formState.isSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
-  Submit
-</Button>
+
+          <Button
+            type="submit"
+            disabled={form.formState.isSubmitting}
+            className="w-full rounded-xl bg-cyan-200 text-slate-950 hover:bg-cyan-100 py-2.5 text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          >
+            {form.formState.isSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
+            Submit
+          </Button>
         </form>
       </Form>
 
       {errorMessage && (
-        (errorMessage.toLowerCase().includes("expired") || 
+        (errorMessage.toLowerCase().includes("expired") ||
          errorMessage.toLowerCase().includes("code is wrong") ||
          errorMessage.toLowerCase().includes("invalid") ||
          errorMessage.toLowerCase().includes("incorrect")) && (
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600 mb-2">
+          <div className="mt-6 rounded-2xl border border-slate-700/70 bg-slate-950/40 p-4 text-center">
+            <p className="font-body text-sm text-slate-300 mb-3">
               Need a new code?
             </p>
             <button
               onClick={() => handleResendCode(param.username)}
               disabled={isResendingCode}
-              className="bg-black text-white hover:bg-gray-900 rounded-lg w-30 py-2 text-base font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+              className="font-body inline-flex items-center justify-center rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-600 px-4 py-2 text-sm font-semibold text-slate-100 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isResendingCode ? 'Sending...' : 'Resend Code'}
             </button>

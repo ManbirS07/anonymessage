@@ -89,19 +89,19 @@ export default function Signup() {
     })
 
 return (
-  <div className="min-h-screen flex items-center justify-center bg-slate-900 p-4 relative overflow-hidden">
+  <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-[radial-gradient(circle_at_12%_12%,rgba(14,165,233,0.16),transparent_35%),radial-gradient(circle_at_90%_16%,rgba(59,130,246,0.2),transparent_38%),radial-gradient(circle_at_45%_90%,rgba(6,182,212,0.14),transparent_35%),linear-gradient(160deg,#041025_0%,#071330_48%,#020617_100%)]">
     <div className="absolute inset-0 pointer-events-none">
-      <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-indigo-600/15 rounded-full blur-[100px]" />
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-violet-600/15 rounded-full blur-[100px]" />
+      <div className="absolute -top-24 right-0 h-[360px] w-[360px] rounded-full bg-cyan-400/20 blur-[120px]" />
+      <div className="absolute -bottom-20 left-0 h-[340px] w-[340px] rounded-full bg-sky-600/20 blur-[120px]" />
     </div>
 
     <form
       onSubmit={handleSubmit}
-      className="relative z-10 w-full max-w-md bg-slate-800/60 border border-slate-700/50 backdrop-blur-sm rounded-2xl shadow-2xl p-8"
+      className="relative z-10 w-full max-w-md rounded-3xl border border-cyan-200/20 bg-slate-900/65 backdrop-blur-xl p-8 shadow-[0_20px_55px_rgba(2,6,23,0.55)]"
     >
       <FieldGroup className="flex flex-col gap-4">
         <div className="text-center mb-2">
-          <p className="font-display text-xs font-semibold uppercase tracking-widest text-indigo-400 mb-3">
+          <p className="font-body text-xs uppercase tracking-[0.2em] text-cyan-200/70 mb-3">
             AnonyMessage
           </p>
           <h1 className="font-display text-4xl font-bold text-white mb-2">
@@ -120,7 +120,7 @@ return (
                 <Input {...field} id="username" type="text"
                   onChange={(e) => { field.onChange(e); debounced(e.target.value); }}
                   aria-invalid={fieldState.invalid} placeholder="username"
-                  className="font-body bg-slate-900/60 border border-slate-700 text-white placeholder-slate-500 rounded-xl focus:border-indigo-500 pr-10"
+                  className="font-body bg-slate-950/50 border border-slate-700 text-white placeholder-slate-500 rounded-xl focus:border-cyan-300 pr-10"
                 />
                 {isCheckingUsername && (
                   <div className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -145,7 +145,7 @@ return (
               <Input {...field} id="email" type="email" autoComplete="off"
                 onChange={(e) => field.onChange(e.target.value)}
                 aria-invalid={fieldState.invalid} placeholder="you@example.com"
-                className="font-body bg-slate-900/60 border border-slate-700 text-white placeholder-slate-500 rounded-xl focus:border-indigo-500"
+                className="font-body bg-slate-950/50 border border-slate-700 text-white placeholder-slate-500 rounded-xl focus:border-cyan-300"
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -158,7 +158,7 @@ return (
               <FieldLabel htmlFor="password" className="font-body text-slate-300 text-sm font-medium">Password</FieldLabel>
               <Input {...field} aria-invalid={fieldState.invalid} id="password" type="password"
                 placeholder="••••••••"
-                className="font-body bg-slate-900/60 border border-slate-700 text-white placeholder-slate-500 rounded-xl focus:border-indigo-500"
+                className="font-body bg-slate-950/50 border border-slate-700 text-white placeholder-slate-500 rounded-xl focus:border-cyan-300"
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -171,7 +171,7 @@ return (
               <FieldLabel htmlFor="confirmPassword" className="font-body text-slate-300 text-sm font-medium">Confirm Password</FieldLabel>
               <Input {...field} aria-invalid={fieldState.invalid} id="confirmPassword" type="password"
                 placeholder="••••••••"
-                className="font-body bg-slate-900/60 border border-slate-700 text-white placeholder-slate-500 rounded-xl focus:border-indigo-500"
+                className="font-body bg-slate-950/50 border border-slate-700 text-white placeholder-slate-500 rounded-xl focus:border-cyan-300"
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -180,7 +180,7 @@ return (
 
         <button
           type="submit" disabled={submitting}
-          className="font-body w-full bg-white text-slate-900 hover:bg-slate-100 font-semibold py-2.5 px-4 rounded-xl transition-all duration-200 text-sm mt-2 flex items-center justify-center gap-2 shadow-lg disabled:opacity-60"
+          className="font-body w-full bg-cyan-200 text-slate-950 hover:bg-cyan-100 font-semibold py-2.5 px-4 rounded-xl transition-all duration-200 text-sm mt-2 flex items-center justify-center gap-2 shadow-lg disabled:opacity-60"
         >
           {submitting ? (<><Loader2 className="h-4 w-4 animate-spin mr-1" />Signing up...</>) : 'Sign up'}
         </button>
@@ -188,7 +188,7 @@ return (
         <div className="text-center pt-3 border-t border-slate-700/50">
           <p className="font-body text-slate-400 text-sm">
             Already a member?{' '}
-            <a href="/auth/sign-in" className="text-indigo-400 font-semibold hover:text-indigo-300 transition-colors">
+            <a href="/auth/sign-in" className="text-cyan-300 font-semibold hover:text-cyan-200 transition-colors">
               Sign in
             </a>
           </p>

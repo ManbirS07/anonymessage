@@ -65,20 +65,19 @@ export default function SignIn() {
   });
 
   return (
-  <div className="min-h-screen flex items-center justify-center bg-slate-900 p-4 relative overflow-hidden">
-    {/* Background blobs */}
+  <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-[radial-gradient(circle_at_12%_12%,rgba(14,165,233,0.16),transparent_35%),radial-gradient(circle_at_90%_16%,rgba(59,130,246,0.2),transparent_38%),radial-gradient(circle_at_45%_90%,rgba(6,182,212,0.14),transparent_35%),linear-gradient(160deg,#041025_0%,#071330_48%,#020617_100%)]">
     <div className="absolute inset-0 pointer-events-none">
-      <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-indigo-600/15 rounded-full blur-[100px]" />
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-violet-600/15 rounded-full blur-[100px]" />
+      <div className="absolute -top-24 right-0 h-[360px] w-[360px] rounded-full bg-cyan-400/20 blur-[120px]" />
+      <div className="absolute -bottom-20 left-0 h-[340px] w-[340px] rounded-full bg-sky-600/20 blur-[120px]" />
     </div>
 
     <form
       onSubmit={handleSubmit}
-      className="relative z-10 w-full max-w-md bg-slate-800/60 border border-slate-700/50 backdrop-blur-sm rounded-2xl shadow-2xl p-8"
+      className="relative z-10 w-full max-w-md rounded-3xl border border-cyan-200/20 bg-slate-900/65 backdrop-blur-xl p-8 shadow-[0_20px_55px_rgba(2,6,23,0.55)]"
     >
       <FieldGroup className="flex flex-col gap-4">
         <div className="text-center mb-2">
-          <p className="font-display text-xs font-semibold uppercase tracking-widest text-indigo-400 mb-3">
+          <p className="font-body text-xs uppercase tracking-[0.2em] text-cyan-200/70 mb-3">
             AnonyMessage
           </p>
           <h1 className="font-display text-4xl font-bold text-white mb-2">
@@ -105,7 +104,7 @@ export default function SignIn() {
                 onChange={(e) => field.onChange(e.target.value)}
                 aria-invalid={fieldState.invalid}
                 placeholder="you@example.com"
-                className="font-body bg-slate-900/60 border border-slate-700 text-white placeholder-slate-500 rounded-xl focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                className="font-body bg-slate-950/50 border border-slate-700 text-white placeholder-slate-500 rounded-xl focus:border-cyan-300 focus:ring-1 focus:ring-cyan-300/40"
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -134,7 +133,7 @@ export default function SignIn() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="font-body w-full bg-white text-slate-900 hover:bg-slate-100 font-semibold py-2.5 px-4 rounded-xl transition-all duration-200 text-sm mt-2 flex items-center justify-center gap-2 shadow-lg disabled:opacity-60"
+          className="font-body w-full bg-cyan-200 text-slate-950 hover:bg-cyan-100 font-semibold py-2.5 px-4 rounded-xl transition-all duration-200 text-sm mt-2 flex items-center justify-center gap-2 shadow-lg disabled:opacity-60"
         >
           {isSubmitting ? (
             <><Loader2 className="h-4 w-4 animate-spin" /> Signing in...</>
@@ -142,9 +141,9 @@ export default function SignIn() {
         </button>
 
         <div className="flex items-center gap-4 my-1">
-          <div className="flex-grow border-t border-slate-700" />
-          <span className="font-body text-slate-500 text-xs">OR</span>
-          <div className="flex-grow border-t border-slate-700" />
+          <div className="flex-grow border-t border-slate-700/70" />
+          <span className="font-body text-slate-400 text-xs">OR</span>
+          <div className="flex-grow border-t border-slate-700/70" />
         </div>
 
         <div className="flex gap-3 justify-center w-full items-center flex-wrap">
@@ -152,7 +151,7 @@ export default function SignIn() {
             <button
               key={o.label}
               type="button"
-              className="font-body text-sm gap-2 px-4 h-10 border border-slate-700 hover:bg-slate-700/60 w-full flex items-center justify-center font-medium bg-slate-800/60 text-slate-200 rounded-xl transition-all duration-200"
+              className="font-body text-sm gap-2 px-4 h-10 border border-slate-700 hover:bg-slate-700/60 w-full flex items-center justify-center font-medium bg-slate-950/50 text-slate-200 rounded-xl transition-all duration-200"
               onClick={() => handleOAuth(o.label.split(' ')[2].toLowerCase())}
             >
               <div className="grid place-items-center rounded-full bg-white size-5 p-0.5 flex-shrink-0">
@@ -166,7 +165,7 @@ export default function SignIn() {
         <div className="text-center pt-3 border-t border-slate-700/50">
           <p className="font-body text-slate-400 text-sm">
             Don't have an account?{' '}
-            <a href="/auth/sign-up" className="text-indigo-400 font-semibold hover:text-indigo-300 transition-colors">
+            <a href="/auth/sign-up" className="text-cyan-300 font-semibold hover:text-cyan-200 transition-colors">
               Sign up
             </a>
           </p>
