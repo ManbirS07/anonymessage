@@ -20,16 +20,20 @@ export async function GET(request: Request) {
 
         //implementing pagination for messages, to avoid sending all messages at once if the user has many messages
         const url = new URL(request.url);
+        //the url is something like /api/get-messages?page=1 we need to extract the page query parameters for pagination
+        //we can also ask the user for the page size, and the query would be /api/get-messages?page=1&pageSize=10 
         const pageParam = Number(url.searchParams.get("page") || "1")
-        const pageSizeParam = Number(url.searchParams.get("pageSize") || "10")
+        const pageSizeParam = Number(url.searchParams.get("pageSize") || "5")
 
         const page = Number.isInteger(pageParam) && pageParam > 0 ? pageParam : 1
         // Cap pageSize to avoid heavy queries from very large values.
-        const pageSize = Number.isInteger(pageSizeParam) && pageSizeParam > 0
-            ? Math.min(pageSizeParam, 50)
-            : 10
+        const pageSize = Number.isInteger(pageSizeParam) && pageSizeParam > 0 ? Math.min(pageSizeParam, 50): 5
+        const skip = (page - 1) * pageSize //offset
 
-        const skip = (page - 1) * pageSize
+        //SELECT * FROM messages
+        //WHERE userId = userId
+        //ORDER BY createdAt DESC
+        //LIMIT pageSize OFFSET skip
 
         try {
             //fetch messages for the user with pagination, ordered by createdAt in descending order (newest messages first)
@@ -37,7 +41,7 @@ export async function GET(request: Request) {
                 prisma.message.findMany({
                     where: { userId },
                     orderBy: { createdAt: "desc" }, //newest messages first
-                    skip,
+                    skip, //this is the offset, i.e how many messages to skip based on the current page
                     take: pageSize
                 }),
                 prisma.message.count({

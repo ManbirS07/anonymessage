@@ -55,6 +55,10 @@ export default function PublicProfile() {
   };
 
   // Step 3 — Fetch AI suggested messages and parse the streamed response
+  //how?
+  // When user clicks "Suggest Messages", we send a request to our API route which calls the AI gateway to generate message suggestions. 
+  // The response is streamed back as Server-Sent Events (SSE). 
+  // We read the stream, parse the incoming data chunks, and update the UI with the suggestions in real-time.
   const handleSuggestMessages = async () => {
     setIsSuggesting(true);
     setSuggestedMessages([]);
@@ -62,16 +66,58 @@ export default function PublicProfile() {
       const res = await fetch('/api/suggest-messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: [] }),
+        body: JSON.stringify({
+          messages: [
+            {
+              role: 'user',
+              content: `Generate message suggestions for sending an anonymous message to ${username}. The messages should be friendly, engaging, and appropriate.`,
+            }
+          ],
+        }),
       });
 
       if (!res.ok) throw new Error('Failed to fetch suggestions');
 
-      // Read the streamed text response
-      const text = await res.text();
+      const reader = res.body?.getReader();
+      if (!reader) throw new Error('No response stream found');
+
+      const decoder = new TextDecoder();
+      let sseBuffer = '';
+      let generatedText = '';
+
+      const parseSseLine = (line: string) => {
+        const trimmed = line.trim();
+        if (!trimmed.startsWith('data:')) return;
+
+        const payload = trimmed.slice(5).trim();
+        if (!payload || payload === '[DONE]') return;
+
+        try {
+          const event = JSON.parse(payload) as { type?: string; delta?: string };
+          if (event.type === 'text-delta' && typeof event.delta === 'string') {
+            generatedText += event.delta;
+          }
+        } catch {
+          // Ignore partial/incomplete JSON chunks until the next read
+        }
+      };
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        sseBuffer += decoder.decode(value, { stream: true });
+        const lines = sseBuffer.split('\n');
+        sseBuffer = lines.pop() ?? '';
+        lines.forEach(parseSseLine);
+      }
+
+      if (sseBuffer.length > 0) {
+        parseSseLine(sseBuffer);
+      }
 
       // Parse — questions are separated by ||
-      const parsed = text
+      const parsed = generatedText
         .split('||')
         .map((q) => q.trim())
         .filter((q) => q.length > 0 && q.length < 300);
