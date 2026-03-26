@@ -1,5 +1,4 @@
 'use client';
-
 import { MessageCard } from '@/src/app/components/messageCard';
 import { Switch } from '@/src/app/components/ui/switch';
 import { toast } from 'sonner';

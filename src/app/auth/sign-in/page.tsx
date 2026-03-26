@@ -4,7 +4,7 @@ import { signInSchema } from "@/src/schemas/signInSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
 import { Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {signIn} from "next-auth/react";
 import { toast } from "sonner";
@@ -24,6 +24,20 @@ type Schema = z.infer<typeof signInSchema>;
 export default function SignIn() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const error = params.get("error");
+    if (!error) return;
+
+    const errorMessages: Record<string, string> = {
+      account_not_found: "No account found for this Google email. Please sign up first.",
+      account_not_verified: "Your account is not verified yet. Please verify your email first.",
+      oauth_error: "Google sign-in failed. Please try again.",
+    };
+
+    toast.error(errorMessages[error] ?? "Unable to sign in with Google.");
+  }, []);
 
   const handleOAuth = (provider: string) => {
       signIn(provider, {

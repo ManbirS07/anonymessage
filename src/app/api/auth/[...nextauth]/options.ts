@@ -2,7 +2,8 @@ import { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import Google from "next-auth/providers/google"
 import bcrypt from "bcryptjs"
-import prisma from "@/src/lib/db"
+
+const getPrisma = async () => (await import("@/src/lib/db")).default;
 
 // Authentication Providers in NextAuth.js are services that can be used to sign in a user.
 // Main ways user can be signed in:
@@ -24,6 +25,7 @@ export const authOptions: NextAuthOptions = {
                 }
 
                 try {
+                    const prisma = await getPrisma();
                     const user = await prisma.user.findUnique({
                     where: {
                         email: credentials.email
@@ -98,6 +100,7 @@ export const authOptions: NextAuthOptions = {
              // For OAuth sign-ins, user object won't have all fields — fetch from DB
              if(account?.provider === "google" && !token.id) {
                 try {
+                    const prisma = await getPrisma();
                     const dbUser = await prisma.user.findUnique({
                     where: { email: token.email as string },
                     select: { username: true, id: true, isAcceptingMessages: true, isVerified: true }
@@ -127,29 +130,32 @@ export const authOptions: NextAuthOptions = {
             return session
         },
 
-        async signIn({ user, account}) {
-  if (account?.provider === 'google') {
-    try {
-      const existingUser =  await prisma.user.findUnique({
-                    where: { email: user.email as string },
-                    select: { username: true, id: true, isAcceptingMessages: true, isVerified: true }
-                })
-      
-      if (existingUser && existingUser.isVerified) {
-        // Only let them in if they've signed up AND verified
-        user.username = existingUser.username;
-        user.id = existingUser.id;
-        user.isAcceptingMessages = existingUser.isAcceptingMessages;
-        return true;
-      } 
+    async signIn({ user, account}) {
+    if (account?.provider === 'google') {
+        try {
+            const prisma = await getPrisma();
+            const existingUser =  await prisma.user.findUnique({where: { email: user.email as string },
+ select: { username: true, id: true, isAcceptingMessages: true, isVerified: true }
+                                })
 
-      return false; // No user found, prevent sign-in and redirect to sign-in page where we can show an error message about needing to sign up first
-    } catch (error) {
-      console.error('Google sign in error:', error);
-      return false;
+            if (!existingUser) {
+                return '/auth/sign-in?error=account_not_found';
+            }
+
+            if (!existingUser.isVerified) {
+                return '/auth/sign-in?error=account_not_verified';
+            }
+
+            user.username = existingUser.username;
+            user.id = existingUser.id;
+            user.isAcceptingMessages = existingUser.isAcceptingMessages;
+            return true;
+        } catch (error) {
+            console.error('Google sign in error:', error);
+            return '/auth/sign-in?error=oauth_error';
+        }
     }
-  }
-  return true;
+    return true;
 },
     }, 
 }
