@@ -3,7 +3,7 @@ import { Mail, ArrowRight } from 'lucide-react';
 import Autoplay from 'embla-carousel-autoplay';
 import messages from '@/messages.json';
 import { useRouter } from 'next/navigation';
-import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
+import { Carousel, CarouselContent, CarouselItem } from '@/src/app/components/ui/carousel';
 import { useSession } from 'next-auth/react';
 
 export default function Home() {

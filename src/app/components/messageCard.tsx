@@ -1,15 +1,15 @@
 'use client'
-import axios, { AxiosError } from 'axios';
-import dayjs from 'dayjs';
-import { X, MessageCircle } from 'lucide-react';
-import { Message } from '@/src/model/User';
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader,
   AlertDialogTitle, AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
-import { toast } from 'sonner';
+} from '@/src/app/components/ui/alert-dialog';
+import { Message } from '@/src/model/User';
 import { ApiResponse } from '@/src/types/ApiResponse';
+import axios, { AxiosError } from 'axios';
+import dayjs from 'dayjs';
+import { MessageCircle, X } from 'lucide-react';
+import { toast } from 'sonner';
 
 type MessageCardProps = {
   message: Message;

@@ -1,17 +1,17 @@
 // / verify-code/[username] to get dynamic data from url in nextjs
 'use client'
-import * as z from "zod";
+import { Button } from "@/src/app/components/ui/button";
+import { Form, FormField, FormItem, FormLabel, FormMessage } from "@/src/app/components/ui/form";
+import { Input } from "@/src/app/components/ui/input";
 import { verifyCodeSchema } from "@/src/schemas/verifyCodeSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useParams, useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { useState } from "react";
-import { Loader2 } from "lucide-react";
 import axios from "axios";
+import { Loader2 } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { Form, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import * as z from "zod";
 
 type Schema = z.infer<typeof verifyCodeSchema>;
 

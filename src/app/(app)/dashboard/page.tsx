@@ -1,7 +1,7 @@
 'use client';
 
-import { MessageCard } from '@/components/messageCard';
-import { Switch } from '@/components/ui/switch';
+import { MessageCard } from '@/src/app/components/messageCard';
+import { Switch } from '@/src/app/components/ui/switch';
 import { toast } from 'sonner';
 import { ApiResponse } from '@/src/types/ApiResponse';
 import { AcceptMessageSchema } from '@/src/schemas/acceptMessageSchema';
@@ -108,7 +108,8 @@ function UserDashboard() {
 
   useEffect(() => {
     if (user?.username) {
-      const baseUrl = `${window.location.protocol}//${window.location.host}`;
+      const configuredBaseUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '');
+      const baseUrl = configuredBaseUrl || window.location.origin;
       setProfileUrl(`${baseUrl}/u/${user.username}`);
     }
   }, [user?.username]);

@@ -1,7 +1,7 @@
 'use client'
 import { EyeIcon, EyeOffIcon } from 'lucide-react'
 import { useState } from 'react'
-import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '@/components/ui/input-group'
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '@/src/app/components/ui/input-group'
 
 export function Password(props: React.ComponentProps<typeof InputGroupInput>) {
   const [isVisible, setIsVisible] = useState<boolean>(false)

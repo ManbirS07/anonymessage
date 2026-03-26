@@ -1,9 +1,8 @@
-import type { Metadata } from 'next';
-import { Toaster } from 'sonner';
 import AuthProvider from '@/src/context/AuthProvider';
-import { Instrument_Serif, DM_Sans } from 'next/font/google';
+import type { Metadata } from 'next';
+import { DM_Sans, Instrument_Serif } from 'next/font/google';
+import { Toaster } from 'sonner';
 import './globals.css';
-import Navbar from '@/components/navbar';
 
 const instrumentSerif = Instrument_Serif({
   weight: ['400'],

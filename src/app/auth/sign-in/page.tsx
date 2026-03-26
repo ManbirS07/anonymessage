@@ -4,13 +4,13 @@ import { signInSchema } from "@/src/schemas/signInSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
 import { Loader2 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import {signIn, useSession} from "next-auth/react";
+import {signIn} from "next-auth/react";
 import { toast } from "sonner";
-import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import {Password} from "@/components/password";
+import { Field, FieldError, FieldGroup, FieldLabel } from "@/src/app/components/ui/field";
+import { Input } from "@/src/app/components/ui/input";
+import {Password} from "@/src/app/components/password";
 
 const socialMediaButtons = [
   {

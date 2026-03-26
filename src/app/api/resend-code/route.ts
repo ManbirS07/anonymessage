@@ -10,7 +10,7 @@ export async function POST(request: Request) {
         const resentCode = Math.floor(100000 + Math.random() * 900000).toString(); // random 6 digit code converted to string
 
         const { username } = await request.json();
-        let user = await prisma.user.findUnique({ where: { username } });
+        const user = await prisma.user.findUnique({ where: { username } });
 
         //edge case: if user tries to resend code without signing up, toh user null hoga, toh us case me error denge ki user not found
         if (!user) {
