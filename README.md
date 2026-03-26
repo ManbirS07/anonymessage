@@ -1,4 +1,4 @@
-# AnonMessage
+# AnonyMessage
 
 A full-stack anonymous messaging platform where users can share a unique public link and receive honest, anonymous messages from anyone — without revealing who sent them.
 
@@ -6,7 +6,7 @@ A full-stack anonymous messaging platform where users can share a unique public 
 
 - **Anonymous messaging** — Anyone with your link can send you a message without creating an account
 - **Email verification** — New accounts are verified via a one-time code sent by email
-- **Google OAuth** — Sign in with Google (account must be pre-registered and verified)
+- **Google OAuth** — Sign in with Google
 - **AI-powered suggestions** — Powered by Google Gemini 2.5 Flash; suggests open-ended message prompts when composing
 - **Dashboard** — View, delete, and paginate through received messages
 - **Accept / reject messages** — Toggle whether your profile accepts new messages
