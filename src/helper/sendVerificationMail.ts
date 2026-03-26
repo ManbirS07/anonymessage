@@ -1,9 +1,10 @@
 import VerificationEmail from "@/src/emails/VerificationEmail";
-import resend from "../lib/resend";
+import { getResendClient } from "../lib/resend";
 import { ApiResponse } from "../types/ApiResponse";
 
 export default async function sendVerificationMail(email:string, username: string, verifyCode: string) : Promise<ApiResponse> {
     try {
+        const resend = getResendClient();
         console.log("Sending verification email to:", email, "for username:", username);
         const response = await resend.emails.send({
             from: "Manbir <onboarding@resend.dev>", 
