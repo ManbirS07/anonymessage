@@ -1,19 +1,20 @@
 import AuthProvider from '@/src/context/AuthProvider';
 import type { Metadata } from 'next';
-import { DM_Sans, Instrument_Serif } from 'next/font/google';
+import { Poppins } from 'next/font/google';
 import { Toaster } from 'sonner';
 import './globals.css';
 
-const instrumentSerif = Instrument_Serif({
-  weight: ['400'],
+const poppinsBody = Poppins({
+  weight: ['400', '500', '600', '700'],
   subsets: ['latin'],
-  variable: '--font-display',
+  variable: '--font-body',
   display: 'swap',
 });
 
-const dmSans = DM_Sans({
+const poppinsDisplay = Poppins({
+  weight: ['400', '500', '600', '700'],
   subsets: ['latin'],
-  variable: '--font-body',
+  variable: '--font-display',
   display: 'swap',
 });
 
@@ -24,7 +25,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${instrumentSerif.variable} ${dmSans.variable}`}>
+    <html lang="en" className={`${poppinsBody.variable} ${poppinsDisplay.variable}`}>
       <body className="font-body">
         <AuthProvider>
           {children}
