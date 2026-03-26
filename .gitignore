@@ -42,7 +42,3 @@ next-env.d.ts
 
 src/app/generated/prisma
 app/generated/prisma
-
-# db migrations
-migrations
-prisma
