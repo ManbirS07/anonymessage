@@ -90,7 +90,6 @@ GOOGLE_CLIENT_ID="your-google-client-id"
 GOOGLE_CLIENT_SECRET="your-google-client-secret"
 
 # Email provider
-# Choose one: smtp or mailtrap
 MAIL_PROVIDER="smtp"
 
 # Custom SMTP (recommended when you don't have a domain yet)
@@ -103,12 +102,6 @@ SMTP_PASS="your-app-password"
 # Shared sender fields
 MAIL_FROM_EMAIL="your-email@gmail.com"
 MAIL_FROM_NAME="AnonyMessage"
-
-# Optional Mailtrap API mode
-# MAIL_PROVIDER="mailtrap"
-# MAILTRAP_API_TOKEN="your-mailtrap-api-token"
-# MAILTRAP_FROM_EMAIL="hello@demomailtrap.co"
-# MAILTRAP_FROM_NAME="AnonyMessage"
 
 # Google Gemini AI (https://aistudio.google.com)
 GOOGLE_GENERATIVE_AI_API_KEY="your-gemini-api-key"
