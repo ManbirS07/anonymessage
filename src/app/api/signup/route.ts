@@ -37,7 +37,6 @@ export async function POST(request: Request) {
         expiryTime.setHours(expiryTime.getHours() + 1); //otp expires in 1 hour
         const verifyCode = Math.floor(100000 + Math.random() * 900000).toString(); // random 6 digit code converted to string
 
-
         const userByEmail = await prisma.user.findUnique({ where: { email } });
         if (userByEmail) {
             //case 2 -> user ka username alag h but email same, toh check karenge ki kya user verified h ya nahi, agar verified h toh error denge ki user already exists, agar verified nahi h toh naya otp generate karenge, user update karenge aur mail bhej denge

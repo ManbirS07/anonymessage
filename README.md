@@ -20,7 +20,7 @@ A full-stack anonymous messaging platform where users can share a unique public 
 | Language | TypeScript |
 | Auth | [NextAuth.js v4](https://next-auth.js.org) (Credentials + Google OAuth) |
 | Database | PostgreSQL via [Prisma ORM](https://www.prisma.io) |
-| Email | [Resend](https://resend.com) + React Email |
+| Email | [Brevo](https://app.brevo.com/) + React Email |
 | AI | [Vercel AI SDK](https://sdk.vercel.ai) + Google Gemini 2.5 Flash |
 | UI | [Tailwind CSS v4](https://tailwindcss.com) + [shadcn/ui](https://ui.shadcn.com) |
 | Validation | [Zod](https://zod.dev) + React Hook Form |
@@ -89,8 +89,26 @@ NEXTAUTH_URL="http://localhost:3000"
 GOOGLE_CLIENT_ID="your-google-client-id"
 GOOGLE_CLIENT_SECRET="your-google-client-secret"
 
-# Resend (https://resend.com)
-RESEND_API_KEY="your-resend-api-key"
+# Email provider
+# Choose one: smtp or mailtrap
+MAIL_PROVIDER="smtp"
+
+# Custom SMTP (recommended when you don't have a domain yet)
+SMTP_HOST="smtp.gmail.com"
+SMTP_PORT="587"
+SMTP_SECURE="false"
+SMTP_USER="your-email@gmail.com"
+SMTP_PASS="your-app-password"
+
+# Shared sender fields
+MAIL_FROM_EMAIL="your-email@gmail.com"
+MAIL_FROM_NAME="AnonyMessage"
+
+# Optional Mailtrap API mode
+# MAIL_PROVIDER="mailtrap"
+# MAILTRAP_API_TOKEN="your-mailtrap-api-token"
+# MAILTRAP_FROM_EMAIL="hello@demomailtrap.co"
+# MAILTRAP_FROM_NAME="AnonyMessage"
 
 # Google Gemini AI (https://aistudio.google.com)
 GOOGLE_GENERATIVE_AI_API_KEY="your-gemini-api-key"
